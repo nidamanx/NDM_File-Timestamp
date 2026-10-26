@@ -72,7 +72,8 @@ APP_URL="https://github.com/nidamanx/NDM_File-Timestamp"
 #                                the root certificates, this script and its license in
 #                                <file>_bundle_<YYYYMMDD>-<HHMMSS>.tar in the
 #                                ndm_file-timestamp-archives/ folder next to this script
-#                                (or ARCHIVE_DIR), to keep or move them together
+#                                (or ARCHIVE_DIR), to keep or move them together; next
+#                                to it, <archive>.log is the report of that run
 #          --attach FILE|DIR     with --archive and one FILE only: also pack FILE, or
 #                                every file directly inside DIR, in attachments/ (e.g. a
 #                                signed declaration of authorship, PEC receipts), with
@@ -309,8 +310,9 @@ if [[ -t 2 && -n $USE_COLORS ]]; then
 else
   C_WARN="" C_ERR="" C_END=""
 fi
-# While stamping, every line shown is also written, without colors, to the log of the run
-# (<proof folder>.log, set by stamp). A log that cannot be written never stops the run.
+# While stamping or archiving, every line shown is also written, without colors, to the
+# log of the run (<proof folder>.log, set by stamp; <archive>.log, set by archive). A log
+# that cannot be written never stops the run.
 LOG_FILE=""
 log_line() { [[ -z $LOG_FILE ]] || printf '%s\n' "$*" >> "$LOG_FILE" 2>/dev/null || true; }
 say()  { printf '%s==>%s %s\n' "$C_SAY" "$C_OUT" "$*"; log_line "==> $*"; }
@@ -1078,7 +1080,7 @@ verify() {
   local valid_tsas="" n_tsas=0 since n_tsr tsr_sha seen=" "
   VALID_DIRS=()
   for dir in "${dirs[@]}"; do
-    echo
+    line
     say "Proofs: $(basename "$dir")"
     base="${dir##*/}"
     pname="${base%_*}"
@@ -1089,7 +1091,7 @@ verify() {
       warn "    were made, or they are the proofs of another file with the same name"
       continue
     fi
-    [[ $pname == "$name" ]] || printf '    made for the same content under the name: %s\n' "$pname"
+    [[ $pname == "$name" ]] || line "$(printf '    made for the same content under the name: %s' "$pname")"
     dir_valid="" n_tsr=0
     for tsr in "$dir/${pname}".*.tsr; do
       [[ -f "$tsr" ]] || continue
@@ -1097,7 +1099,7 @@ verify() {
       tsa="${tsr%.tsr}"; tsa="${tsa##*.}"
       # Only roots this script trusts (TSA_ROOTS): never a root of the proof folder
       if ! trusted_root "$tsa"; then
-        printf '    %-9s NOT VERIFIED  %s\n' "$tsa" "$ROOT_WHY"
+        line "$(printf '    %-9s NOT VERIFIED  %s' "$tsa" "$ROOT_WHY")"
         continue
       fi
       cafile=$ROOT_CA
@@ -1106,17 +1108,17 @@ verify() {
       when="$(tsr_time "$tsr")"; when="${when#Time stamp: }"
       # An empty string would be parsed by date as today's midnight
       if [[ -z "$when" ]] || ! epoch="$(ts_epoch "$when" 2>/dev/null)"; then
-        printf '    %-9s NOT VERIFIED  unreadable timestamp date: %s\n' "$tsa" "${when:-<none>}"
+        line "$(printf '    %-9s NOT VERIFIED  unreadable timestamp date: %s' "$tsa" "${when:-<none>}")"
         continue
       fi
       if tsr_verify "$hash" "$tsr" "$cafile" "$untrusted" "$RUN_TMP/verify.txt" "$epoch"; then
-        printf '    %-9s VALID     %s  (local time: %s)\n' "$tsa" \
-          "$(fmt_epoch "$epoch" '+%Y-%m-%d %H:%M:%S UTC' -u)" "$(fmt_epoch "$epoch" '+%Y-%m-%d %H:%M:%S %Z')"
+        line "$(printf '    %-9s VALID     %s  (local time: %s)' "$tsa" \
+          "$(fmt_epoch "$epoch" '+%Y-%m-%d %H:%M:%S UTC' -u)" "$(fmt_epoch "$epoch" '+%Y-%m-%d %H:%M:%S %Z')")"
         dir_valid=1
         # The same proofs kept in two places (e.g. a copy next to the file) are one proof
         tsr_sha=$(sha256_of "$tsr")
         if [[ $seen == *" $tsr_sha "* ]]; then
-          printf '    %-9s           (the same timestamp as above, counted once)\n' ""
+          line "$(printf '    %-9s           (the same timestamp as above, counted once)' "")"
         else
           seen+="$tsr_sha "
           valid=$((valid + 1))
@@ -1124,27 +1126,27 @@ verify() {
         if [[ " $valid_tsas " != *" $tsa "* ]]; then valid_tsas+=" $tsa"; n_tsas=$((n_tsas + 1)); fi
         if [[ -z "$earliest" || "$epoch" -lt "$earliest" ]]; then earliest="$epoch"; earliest_tsa="$tsa"; fi
       elif unknown_root "$RUN_TMP/verify.txt"; then
-        printf '    %-9s NOT VERIFIED  %s\n' "$tsa" "$when"
-        printf '              its certificates lead to no root this script trusts: forged, or\n'
-        printf '              signed under a newer root that a newer version of the script knows\n'
+        line "$(printf '    %-9s NOT VERIFIED  %s' "$tsa" "$when")"
+        line "              its certificates lead to no root this script trusts: forged, or"
+        line "              signed under a newer root that a newer version of the script knows"
       elif ess_limit "$RUN_TMP/verify.txt"; then
-        printf '    %-9s NOT VERIFIED  %s\n' "$tsa" "$when"
-        printf '              this openssl (%s) cannot check the certificate list of %s:\n' "$(openssl_name)" "$tsa"
-        printf '              verify it with OpenSSL 3 (README, "Requirements")\n'
+        line "$(printf '    %-9s NOT VERIFIED  %s' "$tsa" "$when")"
+        line "$(printf '              this openssl (%s) cannot check the certificate list of %s:' "$(openssl_name)" "$tsa")"
+        line '              verify it with OpenSSL 3 (README, "Requirements")'
       else
-        printf '    %-9s NOT VERIFIED  %s\n' "$tsa" "$when"
+        line "$(printf '    %-9s NOT VERIFIED  %s' "$tsa" "$when")"
       fi
     done
-    ((n_tsr)) || printf '    no timestamps in this folder (no TSA answered when it was made)\n'
+    ((n_tsr)) || line "    no timestamps in this folder (no TSA answered when it was made)"
     [[ -z $dir_valid ]] || VALID_DIRS+=("$dir")
   done
 
-  echo
+  line
   if [[ -n "$earliest" ]]; then
     since="$(fmt_epoch "$earliest" '+%d/%m/%Y %H:%M:%S %Z')"
     say "Result: $name existed, unchanged, at least since"
-    printf '    %s  (%s)\n' "$since" "$earliest_tsa"
-    printf '    confirmed by %d valid timestamp(s)\n' "$valid"
+    line "$(printf '    %s  (%s)' "$since" "$earliest_tsa")"
+    line "$(printf '    confirmed by %d valid timestamp(s)' "$valid")"
     RESULT_NOTE="existed at least since $since"
     if ((n_tsas < MIN_TIMESTAMPS)); then
       warn "Result: only $n_tsas different TSA(s) confirm it, MIN_TIMESTAMPS is $MIN_TIMESTAMPS"
@@ -1163,8 +1165,9 @@ verify() {
 # valid, and it holds only the proof folders with a valid timestamp. Sets RESULT and
 # RESULT_NOTE like stamp and verify. The attachments (ATTACH_FILES, absolute paths) are
 # verified too and packed in attachments/ whatever the result: a PEC receipt or a
-# registration certificate has a value of its own, without our timestamps.
-archive() {
+# registration certificate has a value of its own, without our timestamps. Sets
+# ARCHIVE_OUT to the archive made, if any.
+archive_file() {
   local file="$1"
   verify "$file"
   ((RESULT == 0)) || { RESULT_NOTE="no archive: $RESULT_NOTE"; return 0; }
@@ -1173,8 +1176,8 @@ archive() {
   local dirs=("${VALID_DIRS[@]}") n_dirs=${#VALID_DIRS[@]} att_abs=() att_names=()
   local att_hashes=() att_notes=() att n_att_ok=0 att_text="" att_verify=""
   for att in ${ATTACH_FILES[@]+"${ATTACH_FILES[@]}"}; do
-    echo
-    echo
+    line
+    line
     say "Attachment $((${#att_names[@]} + 1)) of ${#ATTACH_FILES[@]}"
     # verify leaves VALID_DIRS untouched when no proof folder is found
     RESULT=0 RESULT_NOTE="" VALID_DIRS=()
@@ -1275,17 +1278,36 @@ archive() {
   fi
   mv "$out.partial" "$out"
   rm -rf "$tmp"
-  echo
+  line
   say "Archive: $out"
-  echo "    $name, $n_dirs proof folder(s), $PUBLISHED_NAME $APP_VERSION and its LICENSE."
+  line "    $name, $n_dirs proof folder(s), $PUBLISHED_NAME $APP_VERSION and its LICENSE."
   if ((${#att_names[@]})); then
-    echo "    $ATTACH_DIR_NAME/: ${#att_names[@]} file(s), $n_att_ok with valid timestamps."
+    line "    $ATTACH_DIR_NAME/: ${#att_names[@]} file(s), $n_att_ok with valid timestamps."
   fi
-  echo "    To check it later: extract it, then run in the extracted folder"
-  echo "      ./$PUBLISHED_NAME --verify \"$name\""
-  [[ -z $att_verify ]] || printf '%s' "$att_verify" | sed 's/^/    /'
+  line "    To check it later: extract it, then run in the extracted folder"
+  line "      ./$PUBLISHED_NAME --verify \"$name\""
+  while IFS= read -r e; do
+    [[ -z $e ]] || line "    $e"
+  done <<< "$att_verify"
   RESULT_NOTE="archive $(basename "$out")"
   ((${#att_names[@]} == 0)) || RESULT_NOTE+=", ${#att_names[@]} attachment(s)"
+  ARCHIVE_OUT=$out
+}
+
+# Like stamp, every line shown is also written to a log of the run; the name of the
+# archive is known only at the end, so the log is kept aside until then, and moved next
+# to the archive (<archive>.log) only if the archive was made.
+archive() {
+  ARCHIVE_OUT=""
+  run_tmp
+  LOG_FILE="$RUN_TMP/archive.log"
+  : > "$LOG_FILE" 2>/dev/null || LOG_FILE=""
+  archive_file "$1"
+  if [[ -n $ARCHIVE_OUT && -n $LOG_FILE ]]; then
+    mv "$LOG_FILE" "${ARCHIVE_OUT%.tar}.log" 2>/dev/null || true
+  fi
+  rm -f "$RUN_TMP/archive.log"
+  LOG_FILE=""
 }
 
 # README.txt of an archive. The 4th argument lists the attachments (one name and one

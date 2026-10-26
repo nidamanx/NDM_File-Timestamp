@@ -429,10 +429,12 @@ To keep or move everything together, use `--archive`:
 
 It verifies the file first: an archive is made only when at least one timestamp is
 valid. It creates `project.zip_bundle_<YYYYMMDD>-<HHMMSS>.tar` in
-`ndm_file-timestamp-archives/` next to the script (or in `ARCHIVE_DIR`). Like the proof
-folder, that folder is in the repository, empty except for a `.gitkeep` file: Git ignores
-the archives, and the script creates the folder again if it is missing. The archive
-contains:
+`ndm_file-timestamp-archives/` next to the script (or in `ARCHIVE_DIR`), and next to it
+`project.zip_bundle_<YYYYMMDD>-<HHMMSS>.log`, the report of that run as shown on screen
+(without colors): which proofs and attachments were valid when the archive was made.
+Like the proof folder, that folder is in the repository, empty except for a `.gitkeep`
+file: Git ignores the archives, and the script creates the folder again if it is
+missing. The archive contains:
 
 ```
 project.zip_bundle_20261026-065616/
@@ -723,7 +725,7 @@ NDM_File-Timestamp/
 │   └── .gitkeep                   keeps the empty folder in the repository
 ├── ndm_file-timestamp-proofs/     your proofs (contents ignored by Git)
 │   └── .gitkeep                   keeps the empty folder in the repository
-├── ndm_file-timestamp-archives/   your archives made with --archive (ignored by Git)
+├── ndm_file-timestamp-archives/   your archives made with --archive, and their logs (ignored by Git)
 │   └── .gitkeep                   keeps the empty folder in the repository
 ├── templates/                     blank templates to fill in (see the step-by-step section)
 │   ├── authorship-declaration.en.txt  declaration of authorship of a work, in English

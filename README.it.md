@@ -449,9 +449,12 @@ Per conservare o spostare tutto insieme, usa `--archive`:
 
 Prima verifica il file: l'archivio nasce solo se almeno una marca è valida. Crea
 `project.zip_bundle_<AAAAMMGG>-<HHMMSS>.tar` in `ndm_file-timestamp-archives/` accanto
-allo script (o in `ARCHIVE_DIR`). Come la cartella delle prove, anche questa fa parte del
-repository, vuota tranne un file `.gitkeep`: Git ignora gli archivi, e lo script ricrea la
-cartella se manca. L'archivio contiene:
+allo script (o in `ARCHIVE_DIR`) e, accanto a esso,
+`project.zip_bundle_<AAAAMMGG>-<HHMMSS>.log`, il resoconto di quell'esecuzione come appare
+a schermo (senza colori): quali prove e quali allegati erano validi quando l'archivio è
+stato creato. Come la cartella delle prove, anche questa fa parte del repository, vuota
+tranne un file `.gitkeep`: Git ignora gli archivi, e lo script ricrea la cartella se
+manca. L'archivio contiene:
 
 ```
 project.zip_bundle_20261026-065616/
@@ -749,7 +752,7 @@ NDM_File-Timestamp/
 │   └── .gitkeep                   mantiene la cartella vuota nel repository
 ├── ndm_file-timestamp-proofs/     le tue prove (contenuto ignorato da Git)
 │   └── .gitkeep                   mantiene la cartella vuota nel repository
-├── ndm_file-timestamp-archives/   i tuoi archivi creati con --archive (ignorati da Git)
+├── ndm_file-timestamp-archives/   i tuoi archivi creati con --archive, e i loro log (ignorati da Git)
 │   └── .gitkeep                   mantiene la cartella vuota nel repository
 ├── templates/                     modelli vuoti da compilare (vedi la sezione passo per passo)
 │   ├── authorship-declaration.en.txt  dichiarazione di paternità di un'opera, in inglese

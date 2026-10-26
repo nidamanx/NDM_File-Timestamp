@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `--archive` also writes the report of the run, as shown on screen (without colors),
+  next to each archive: `<file>_bundle_<YYYYMMDD>-<HHMMSS>.log`. It records which proofs
+  and attachments were valid when the archive was made. No log is left when no archive is
+  made.
+
 ## [1.4.0] - 2026-10-26
 
 First public release. NDM File Timestamp was written in 2023 and has been used privately

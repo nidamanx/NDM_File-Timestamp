@@ -108,6 +108,7 @@ jobs:
           rc=0; "$GITHUB_WORKSPACE/ndm_file-timestamp.sh" --archive sample.txt || rc=$?
           test "$rc" -eq 1
           ! ls "$GITHUB_WORKSPACE"/ndm_file-timestamp-archives/*.tar 2>/dev/null
+          ! ls "$GITHUB_WORKSPACE"/ndm_file-timestamp-archives/*.log 2>/dev/null
       - name: Invalid setting in the configuration file exits with 2
         run: |
           printf 'TSAS=freetsa,nope\n' > ndm_file-timestamp.conf
@@ -170,7 +171,9 @@ jobs:
           mkdir "receipts dir" && echo "receipt $GITHUB_RUN_ID" > "receipts dir/receipt.eml"
           /bin/bash "$script" --archive -d "proof dir" "file with spaces.txt" \
             --attach sample.txt --attach "receipts dir"
-          # The archives go to the archive folder next to the script, in the repository
+          # The archives go to the archive folder next to the script, in the repository,
+          # each with the log of its run next to it
+          grep -q '^==> Archive: ' "$GITHUB_WORKSPACE"/ndm_file-timestamp-archives/"file with spaces.txt"_bundle_*.log
           mkdir extracted
           tar -C extracted -xf "$GITHUB_WORKSPACE"/ndm_file-timestamp-archives/"file with spaces.txt"_bundle_*.tar
           cd extracted/*/
