@@ -5,7 +5,7 @@ APP_NAME="NDM File Timestamp"
 APP_DESCRIPTION="Proves that a file existed, unchanged, at a given time, with RFC 3161 \
 timestamps from several independent Time Stamping Authorities."
 APP_AUTHOR="Nicola Davide Mannarelli (@nidamanx)"
-APP_VERSION="1.4.0"
+APP_VERSION="1.5.0"
 APP_RELEASE_DATE="2026-10-26"
 APP_COPYRIGHT="Copyright (C) 2023-2026 Nicola Davide Mannarelli (@nidamanx)"
 APP_LICENSE="AGPL-3.0-or-later"

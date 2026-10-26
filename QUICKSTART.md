@@ -82,19 +82,19 @@ Download and check them now? [Y/n] y
     same as expected
     saved as ndm_file-timestamp-certs/sectigo-e793c9b02fd8aa13.crt
 
-==> Output folder: /home/user/NDM_File-Timestamp/ndm_file-timestamp-proofs/novel.pdf_20261026-145152
-==> SHA-256: bdeca7ffa08157b4cde3290289917b2a13f7570dc5367f6d6f996f713567819c
+==> Output folder: /home/user/NDM_File-Timestamp/ndm_file-timestamp-proofs/novel.pdf_20261026-164654
+==> SHA-256: bb195ed247f51ec1f299ae5053bebc94cb014a9d5ae2ef7012e9645494ea6d42
 ==> 1/3 freetsa (https://freetsa.org/tsr)
-==>     OK - Time stamp: Oct 26 14:51:52 2026 GMT - verified
+==>     OK - Time stamp: Oct 26 16:46:54 2026 GMT - verified
 ==> 2/3 digicert (http://timestamp.digicert.com)
-==>     OK - Time stamp: Oct 26 14:51:53 2026 GMT - verified
+==>     OK - Time stamp: Oct 26 16:46:55 2026 GMT - verified
 ==> 3/3 sectigo (http://timestamp.sectigo.com)
-==>     OK - Time stamp: Oct 26 14:51:53 2026 GMT - verified
+==>     OK - Time stamp: Oct 26 16:46:55 2026 GMT - verified
 
 ==> Summary for novel.pdf
-    freetsa   Time stamp: Oct 26 14:51:52 2026 GMT - verified
-    digicert  Time stamp: Oct 26 14:51:53 2026 GMT - verified
-    sectigo   Time stamp: Oct 26 14:51:53 2026 GMT - verified
+    freetsa   Time stamp: Oct 26 16:46:54 2026 GMT - verified
+    digicert  Time stamp: Oct 26 16:46:55 2026 GMT - verified
+    sectigo   Time stamp: Oct 26 16:46:55 2026 GMT - verified
 ```
 
 Three independent authorities have signed the hash of the file with their date. Only
@@ -116,15 +116,15 @@ it beforehand with `--get-certs`, or by hand: see
 
 ```
 ==> File:    /home/user/NDM_File-Timestamp/ndm_file-timestamp-files/novel.pdf
-==> SHA-256: bdeca7ffa08157b4cde3290289917b2a13f7570dc5367f6d6f996f713567819c
+==> SHA-256: bb195ed247f51ec1f299ae5053bebc94cb014a9d5ae2ef7012e9645494ea6d42
 
-==> Proofs: novel.pdf_20261026-145152
-    digicert  VALID     2026-10-26 14:51:53 UTC  (local time: 2026-10-26 15:51:53 CET)
-    freetsa   VALID     2026-10-26 14:51:52 UTC  (local time: 2026-10-26 15:51:52 CET)
-    sectigo   VALID     2026-10-26 14:51:53 UTC  (local time: 2026-10-26 15:51:53 CET)
+==> Proofs: novel.pdf_20261026-164654
+    digicert  VALID     2026-10-26 16:46:55 UTC  (local time: 2026-10-26 17:46:55 CET)
+    freetsa   VALID     2026-10-26 16:46:54 UTC  (local time: 2026-10-26 17:46:54 CET)
+    sectigo   VALID     2026-10-26 16:46:55 UTC  (local time: 2026-10-26 17:46:55 CET)
 
 ==> Result: novel.pdf existed, unchanged, at least since
-    26/10/2026 15:51:52 CET  (freetsa)
+    26/10/2026 17:46:54 CET  (freetsa)
     confirmed by 3 valid timestamp(s)
 ```
 
@@ -152,19 +152,19 @@ Then delete `declaration.txt`: only the signed document stays in the folder.
 ```
 
 ```
-==> Output folder: /home/user/NDM_File-Timestamp/ndm_file-timestamp-proofs/declaration.pdf_20261026-145154
-==> SHA-256: 188d0f853d0999b47041ecf1d119bc1245e7036df9fb382c85c1540578a3ad4f
+==> Output folder: /home/user/NDM_File-Timestamp/ndm_file-timestamp-proofs/declaration.pdf_20261026-164656
+==> SHA-256: ecd65e790c3569c337b0fa7f01933d67baa5ba9c964f525f80f3c466ac81f147
 ==> 1/3 freetsa (https://freetsa.org/tsr)
-==>     OK - Time stamp: Oct 26 14:51:55 2026 GMT - verified
+==>     OK - Time stamp: Oct 26 16:46:57 2026 GMT - verified
 ==> 2/3 digicert (http://timestamp.digicert.com)
-==>     OK - Time stamp: Oct 26 14:51:55 2026 GMT - verified
+==>     OK - Time stamp: Oct 26 16:46:57 2026 GMT - verified
 ==> 3/3 sectigo (http://timestamp.sectigo.com)
-==>     OK - Time stamp: Oct 26 14:51:56 2026 GMT - verified
+==>     OK - Time stamp: Oct 26 16:46:59 2026 GMT - verified
 
 ==> Summary for declaration.pdf
-    freetsa   Time stamp: Oct 26 14:51:55 2026 GMT - verified
-    digicert  Time stamp: Oct 26 14:51:55 2026 GMT - verified
-    sectigo   Time stamp: Oct 26 14:51:56 2026 GMT - verified
+    freetsa   Time stamp: Oct 26 16:46:57 2026 GMT - verified
+    digicert  Time stamp: Oct 26 16:46:57 2026 GMT - verified
+    sectigo   Time stamp: Oct 26 16:46:59 2026 GMT - verified
 ```
 
 The declaration contains the SHA-256 of the novel, so the two proofs support each other.
@@ -177,8 +177,8 @@ The declaration contains the SHA-256 of the novel, so the two proofs support eac
 ```
 ==> Proofs in /home/user/NDM_File-Timestamp/ndm_file-timestamp-proofs
     Run (UTC)            Timestamps  SHA-256 (start)   File
-    2026-10-26 14:51:52  3           bdeca7ffa08157b4  novel.pdf
-    2026-10-26 14:51:54  3           188d0f853d0999b4  declaration.pdf
+    2026-10-26 16:46:54  3           bb195ed247f51ec1  novel.pdf
+    2026-10-26 16:46:56  3           ecd65e790c3569c3  declaration.pdf
 
     2 proof folder(s). The run dates come from the local clock; the dates
     that count are those signed by the TSAs: see them with --verify FILE.
@@ -208,11 +208,11 @@ verification report, the same as in step 4, is shortened here):
 ==> File:    /home/user/NDM_File-Timestamp/ndm_file-timestamp-attachments/novel/declaration.pdf
 ...
 ==> Result: declaration.pdf existed, unchanged, at least since
-    26/10/2026 15:51:55 CET  (digicert)
+    26/10/2026 17:46:57 CET  (digicert)
     confirmed by 3 valid timestamp(s)
 
-==> Archive: /home/user/NDM_File-Timestamp/ndm_file-timestamp-archives/novel.pdf_bundle_20261026-145157.tar
-    novel.pdf, 1 proof folder(s), ndm_file-timestamp.sh 1.4.0 and its LICENSE.
+==> Archive: /home/user/NDM_File-Timestamp/ndm_file-timestamp-archives/novel.pdf_bundle_20261026-164700.tar
+    novel.pdf, 1 proof folder(s), ndm_file-timestamp.sh 1.5.0 and its LICENSE.
     attachments/: 1 file(s), 1 with valid timestamps.
     To check it later: extract it, then run in the extracted folder
       ./ndm_file-timestamp.sh --verify "novel.pdf"
@@ -231,8 +231,8 @@ storage), then check a copy, as someone else would:
 ```bash
 cp ndm_file-timestamp-archives/novel.pdf_bundle_*.tar /media/backup/
 cd /media/backup
-tar -xf novel.pdf_bundle_20261026-145157.tar
-cd novel.pdf_bundle_20261026-145157
+tar -xf novel.pdf_bundle_20261026-164700.tar
+cd novel.pdf_bundle_20261026-164700
 sha256sum -c SHA256SUMS
 ./ndm_file-timestamp.sh --verify novel.pdf
 ./ndm_file-timestamp.sh --verify attachments/declaration.pdf
@@ -242,15 +242,15 @@ sha256sum -c SHA256SUMS
 novel.pdf: OK
 attachments/declaration.pdf: OK
 ndm_file-timestamp.sh: OK
-==> File:    /media/backup/novel.pdf_bundle_20261026-145157/novel.pdf
+==> File:    /media/backup/novel.pdf_bundle_20261026-164700/novel.pdf
 ...
 ==> Result: novel.pdf existed, unchanged, at least since
-    26/10/2026 15:51:52 CET  (freetsa)
+    26/10/2026 17:46:54 CET  (freetsa)
     confirmed by 3 valid timestamp(s)
-==> File:    /media/backup/novel.pdf_bundle_20261026-145157/attachments/declaration.pdf
+==> File:    /media/backup/novel.pdf_bundle_20261026-164700/attachments/declaration.pdf
 ...
 ==> Result: declaration.pdf existed, unchanged, at least since
-    26/10/2026 15:51:55 CET  (digicert)
+    26/10/2026 17:46:57 CET  (digicert)
     confirmed by 3 valid timestamp(s)
 ```
 
