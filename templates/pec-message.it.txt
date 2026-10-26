@@ -1,0 +1,49 @@
+================================================================================
+ISTRUZIONI - cancella tutto questo riquadro prima di inviare
+================================================================================
+Modello di messaggio PEC (posta elettronica certificata, Italia) per dare
+*data certa* a un'opera già marcata con NDM File Timestamp
+(https://github.com/nidamanx/NDM_File-Timestamp).
+
+1. Marca e verifica l'opera (ed eventualmente la dichiarazione di paternità
+   firmata, vedi authorship-declaration.it.txt).
+2. Scrivi una PEC dalla tua casella PEC a te stesso/a (o a un'altra casella
+   PEC): oggetto e testo qui sotto, sostituendo ogni [SEGNAPOSTO].
+3. Allega l'opera, così com'è (lo stesso file marcato, non una copia
+   riesportata). Se è troppo grande per la PEC, allega solo la dichiarazione:
+   lo SHA-256 nel testo lega comunque il messaggio all'opera.
+4. Conserva il messaggio ricevuto (file .eml), la ricevuta di accettazione e
+   quella di avvenuta consegna: sono loro la prova. Non basta che restino
+   nella casella, che può scadere: salvale insieme all'opera e alle prove,
+   per esempio in una cartella da allegare all'archivio:
+     ./ndm_file-timestamp.sh --archive opera.zip --attach ricevute-pec/
+
+Questo modello è generico e non è una consulenza legale.
+================================================================================
+
+
+Oggetto: Deposito opera "[TITOLO DELL'OPERA]" - [NOME E COGNOME]
+
+
+Io sottoscritto/a [NOME E COGNOME], codice fiscale [CODICE FISCALE],
+invio con questo messaggio, a fini di prova della data, la seguente opera di
+cui sono autore/autrice:
+
+Titolo:                 [TITOLO DELL'OPERA]
+Descrizione:            [BREVE DESCRIZIONE]
+
+File allegati e relativi SHA-256:
+
+- [NOME DEL FILE]
+  SHA-256: [64 CARATTERI ESADECIMALI]
+  Marca temporale RFC 3161 (NDM File Timestamp): esiste almeno dal
+  [DATA E ORA, FUSO]
+
+- [NOME DEL FILE]
+  SHA-256: [64 CARATTERI ESADECIMALI]
+  Marca temporale RFC 3161 (NDM File Timestamp): esiste almeno dal
+  [DATA E ORA, FUSO]
+
+Lo SHA-256 di ogni file si può ricalcolare con: sha256sum NOMEFILE
+
+[NOME E COGNOME]

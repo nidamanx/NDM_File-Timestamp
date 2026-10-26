@@ -1,0 +1,103 @@
+================================================================================
+ISTRUZIONI - cancella tutto questo riquadro prima di firmare
+================================================================================
+Modello di dichiarazione di paternità di un'opera, da usare insieme alle prove
+create da NDM File Timestamp (https://github.com/nidamanx/NDM_File-Timestamp).
+
+1. Marca prima l'opera:        ./ndm_file-timestamp.sh opera.zip
+   e poi verificala:            ./ndm_file-timestamp.sh --verify opera.zip
+   Dall'output di --verify copia lo SHA-256 e la data "at least since".
+2. Copia questo modello in una cartella dell'opera, per esempio
+   ndm_file-timestamp-attachments/opera/, e lavora sulla copia.
+   Sostituisci ogni [SEGNAPOSTO] con i tuoi dati; cancella le righe e le
+   alternative che non ti servono (quelle con "oppure").
+3. Firma la dichiarazione:
+   - a mano: stampala, firmala, scansionala in PDF;
+   - meglio: con una firma digitale (in Italia: firma digitale qualificata,
+     file .p7m o PDF firmato).
+4. Marca anche la dichiarazione firmata:
+                                ./ndm_file-timestamp.sh dichiarazione.pdf
+   Per una tutela più forte inviala anche via PEC, insieme all'opera (vedi
+   pec-message.it.txt), o depositala presso l'ente del tuo paese.
+5. Conserva tutto insieme in un unico archivio (opera, dichiarazione, ricevute
+   e le loro prove). Nella cartella dell'opera tieni solo i documenti finali:
+     ./ndm_file-timestamp.sh --archive opera.zip \
+         --attach ndm_file-timestamp-attachments/opera/
+6. Tieni l'archivio in almeno due posti. Non aprire e risalvare i file marcati:
+   anche un solo byte diverso invalida le prove. Dopo ogni copia, verifica
+   la copia con --verify.
+
+La dichiarazione da sola non prova la paternità: è un'affermazione firmata,
+che acquista peso insieme alle bozze, ai file di lavoro e alle prove datate.
+Questo modello è generico e non è una consulenza legale.
+================================================================================
+
+
+                      DICHIARAZIONE DI PATERNITÀ DELL'OPERA
+
+
+Il/La sottoscritto/a [NOME E COGNOME],
+nato/a a [LUOGO DI NASCITA] il [GG/MM/AAAA],
+residente in [INDIRIZZO, CAP, CITTÀ, STATO],
+codice fiscale / documento d'identità [CODICE FISCALE O TIPO E NUMERO DEL DOCUMENTO],
+e-mail [E-MAIL],
+
+DICHIARA
+
+1. di essere l'autore/autrice dell'opera descritta di seguito, da lui/lei
+   ideata e realizzata personalmente;
+   oppure: di essere coautore/coautrice dell'opera insieme a
+   [NOMI DEGLI ALTRI AUTORI], con il seguente contributo: [DESCRIZIONE];
+
+2. che l'opera è originale e non copia, in tutto o in parte, opere di terzi,
+   salvo le parti indicate qui: [PARTI DI TERZI E RELATIVE LICENZE, oppure "nessuna"];
+
+3. che, alla data di questa dichiarazione, i diritti di utilizzazione
+   economica dell'opera
+   - non sono stati ceduti a terzi;
+   oppure: sono stati ceduti/concessi in licenza a [NOME] con
+   [CONTRATTO / LICENZA, DATA];
+
+4. di conservare i file di lavoro, le bozze e le versioni precedenti
+   dell'opera, e di poterli esibire su richiesta.
+
+
+DESCRIZIONE DELL'OPERA
+
+Titolo:                 [TITOLO DELL'OPERA]
+Tipo:                   [testo / libro / software / immagine / video / musica /
+                         progetto / procedura / altro: ...]
+Descrizione:            [BREVE DESCRIZIONE DEL CONTENUTO]
+Periodo di creazione:   dal [GG/MM/AAAA] al [GG/MM/AAAA]
+Prima pubblicazione:    [DATA E LUOGO / URL, oppure "inedita"]
+
+
+FILE DELL'OPERA E MARCHE TEMPORALI
+
+Le marche temporali sono state ottenute con NDM File Timestamp da autorità
+di marcatura temporale indipendenti (RFC 3161) e si possono verificare con
+lo script o, a mano, con openssl.
+
+File:                   [NOME DEL FILE]
+SHA-256:                [64 CARATTERI ESADECIMALI]
+Esiste almeno dal:      [DATA E ORA, FUSO]   (autorità: [freetsa / digicert / sectigo])
+Cartella delle prove:   [NOME FILE]_[AAAAMMGG-HHMMSS]
+
+(ripeti il blocco per ogni file dell'opera)
+
+File:                   [NOME DEL FILE]
+SHA-256:                [64 CARATTERI ESADECIMALI]
+Esiste almeno dal:      [DATA E ORA, FUSO]   (autorità: [...])
+Cartella delle prove:   [NOME FILE]_[AAAAMMGG-HHMMSS]
+
+
+Note:                   [EVENTUALI ALTRE PROVE: PEC, deposito SIAE o presso
+                         altro ente, pubblicazioni, testimoni, oppure "nessuna"]
+
+
+Luogo e data:  ______________________________ , ____ / ____ / ________
+
+
+Firma:         ______________________________
+
+               [NOME E COGNOME]

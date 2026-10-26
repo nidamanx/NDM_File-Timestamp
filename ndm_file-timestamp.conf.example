@@ -1,0 +1,54 @@
+# ndm_file-timestamp.conf.example - template for NDM File Timestamp (ndm_file-timestamp.sh)
+#
+# How to use it:
+#   1. Copy this file next to the script, removing ".example":
+#        cp ndm_file-timestamp.conf.example ndm_file-timestamp.conf
+#   2. Edit ndm_file-timestamp.conf: uncomment (remove the leading "#") only the lines
+#      you want to change, and replace the example values with yours.
+#
+# Rules:
+#   - One KEY=value per line. Quotes are optional: KEY="a b" and KEY=a b are the same.
+#   - Lines starting with "#" are ignored. A commented or missing key keeps its default.
+#   - This file is only read, never executed: commands written here are not run.
+#   - ndm_file-timestamp.conf is personal: it is listed in .gitignore. Only this template
+#     belongs in the repository.
+#   - A setting given in the environment wins over this file, and the command line wins
+#     over both (for example -d wins over OUTPUT_DIR).
+#   - An invalid value stops the script with exit code 2 and says which setting is wrong.
+
+# Folder where the proofs are saved, listed and searched: relative to the script folder,
+# or an absolute path such as /media/backup/proofs. -d on the command line wins.
+# The proofs already saved next to the script are still found by --verify.
+# Default: ndm_file-timestamp-proofs next to the script
+#OUTPUT_DIR=/media/backup/proofs
+
+# Folder where --archive creates the archives: relative to the script folder, or an
+# absolute path. Created if missing.
+# Default: ndm_file-timestamp-archives next to the script
+#ARCHIVE_DIR=/media/backup/archives
+
+# Time Stamping Authorities to ask, space or comma separated, among:
+#   freetsa   https://freetsa.org            free public TSA
+#   digicert  http://timestamp.digicert.com  used worldwide for code signing
+#   sectigo   http://timestamp.sectigo.com   used worldwide for code signing
+# Default: all three
+#TSAS="freetsa digicert sectigo"
+
+# How many different TSAs must confirm a file: when stamping, the run fails with fewer
+# timestamps than this; with --verify and --archive, the file fails with fewer different
+# TSAs having a valid timestamp. From 1 to the number of TSAs in TSAS. A higher value
+# gives a stronger proof, but one TSA out of service is then enough to fail.
+# Default: 1
+#MIN_TIMESTAMPS=2
+
+# Before stamping, verifying or archiving, compare this script with the one published on
+# GitHub for its version (as --check-script does): on stops if they differ, and only warns
+# when the comparison is not possible (no network, version not published). It contacts
+# GitHub at every run. See "Checking the script" in the README for the independent check.
+# Default: off
+#SCRIPT_CHECK=on
+
+# Colors on the terminal: on or off. Output saved to a file or sent through a pipe never
+# has colors. The NO_COLOR environment variable (https://no-color.org) also turns them off.
+# Default: on
+#COLORS=off

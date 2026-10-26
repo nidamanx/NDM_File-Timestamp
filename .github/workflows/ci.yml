@@ -1,0 +1,184 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - name: Syntax
+        run: bash -n ndm_file-timestamp.sh
+      - name: ShellCheck
+        run: shellcheck ndm_file-timestamp.sh
+      - name: Version matches in every file
+        # APP_VERSION and APP_RELEASE_DATE are the reference; on a tag push the tag must match too.
+        run: |
+          set -u
+          ver=$(sed -n 's/^APP_VERSION="\(.*\)"$/\1/p' ndm_file-timestamp.sh)
+          date=$(sed -n 's/^APP_RELEASE_DATE="\(.*\)"$/\1/p' ndm_file-timestamp.sh)
+          echo "APP_VERSION=$ver APP_RELEASE_DATE=$date"
+          fail=0
+          expect() {  # file, what, found, wanted
+            if [[ $3 != "$4" ]]; then
+              echo "::error file=$1::$2 is '$3', expected '$4'"; fail=1
+            fi
+          }
+          for f in README.md README.it.md CITATION.cff CHANGELOG.md; do
+            [[ -f $f ]] || { echo "::error file=$f::$f is missing"; fail=1; }
+          done
+          for f in README.md README.it.md; do
+            [[ -f $f ]] || continue
+            expect "$f" "version badge" "$(sed -n 's/.*badge\/version-\([^-]*\)-informational.*/\1/p' "$f")" "$ver"
+          done
+          if [[ -f CITATION.cff ]]; then
+            expect CITATION.cff "version" "$(sed -n 's/^version: "\(.*\)"$/\1/p' CITATION.cff)" "$ver"
+            expect CITATION.cff "date-released" "$(sed -n 's/^date-released: "\(.*\)"$/\1/p' CITATION.cff)" "$date"
+          fi
+          if [[ -f CHANGELOG.md ]]; then
+            expect CHANGELOG.md "latest release" "$(grep -m1 -E '^## \[[0-9]' CHANGELOG.md)" "## [$ver] - $date"
+          fi
+          if [[ $GITHUB_REF_TYPE == tag ]]; then
+            expect ndm_file-timestamp.sh "tag" "$GITHUB_REF_NAME" "v$ver"
+          fi
+          exit "$fail"
+
+  smoke:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - name: Version and help
+        run: |
+          ./ndm_file-timestamp.sh --version
+          ./ndm_file-timestamp.sh --help
+      - name: Requirements
+        run: ./ndm_file-timestamp.sh --requirements
+      - name: Invalid option exits with 2
+        run: |
+          rc=0; ./ndm_file-timestamp.sh --nope || rc=$?
+          test "$rc" -eq 2
+      - name: --verify without a file exits with 2
+        run: |
+          rc=0; ./ndm_file-timestamp.sh --verify || rc=$?
+          test "$rc" -eq 2
+      - name: -d without a directory exits with 2
+        run: |
+          rc=0; ./ndm_file-timestamp.sh -d || rc=$?
+          test "$rc" -eq 2
+      - name: --verify with --list exits with 2
+        run: |
+          rc=0; ./ndm_file-timestamp.sh --verify --list || rc=$?
+          test "$rc" -eq 2
+      - name: --attach without --archive, or with two files, exits with 2
+        run: |
+          rc=0; ./ndm_file-timestamp.sh --attach LICENSE README.md || rc=$?
+          test "$rc" -eq 2
+          rc=0; ./ndm_file-timestamp.sh --archive README.md CHANGELOG.md --attach LICENSE || rc=$?
+          test "$rc" -eq 2
+      - name: Missing attachment exits with 1
+        run: |
+          rc=0; ./ndm_file-timestamp.sh --archive README.md --attach no-such-file.pdf || rc=$?
+          test "$rc" -eq 1
+      - name: --verify-certs without the root certificates exits with 1
+        run: |
+          rc=0; ./ndm_file-timestamp.sh --verify-certs || rc=$?
+          test "$rc" -eq 1
+      - name: --list works without proofs
+        run: ./ndm_file-timestamp.sh --list
+      - name: Missing file exits with 1
+        run: |
+          rc=0; ./ndm_file-timestamp.sh no-such-file.txt || rc=$?
+          test "$rc" -eq 1
+      - name: --verify without proofs exits with 1
+        # Runs offline: --verify contacts no TSA.
+        run: |
+          cd "$RUNNER_TEMP" && echo test > sample.txt
+          rc=0; "$GITHUB_WORKSPACE/ndm_file-timestamp.sh" --verify sample.txt || rc=$?
+          test "$rc" -eq 1
+      - name: --archive without proofs exits with 1 and creates nothing
+        run: |
+          cd "$RUNNER_TEMP" && echo test > sample.txt
+          rc=0; "$GITHUB_WORKSPACE/ndm_file-timestamp.sh" --archive sample.txt || rc=$?
+          test "$rc" -eq 1
+          ! ls "$GITHUB_WORKSPACE"/ndm_file-timestamp-archives/*.tar 2>/dev/null
+      - name: Invalid setting in the configuration file exits with 2
+        run: |
+          printf 'TSAS=freetsa,nope\n' > ndm_file-timestamp.conf
+          rc=0; ./ndm_file-timestamp.sh --list || rc=$?
+          rm -f ndm_file-timestamp.conf
+          test "$rc" -eq 2
+      - name: The released script is the published one
+        # Only on a tag push: the file at the tag must match the checked-out script
+        if: github.ref_type == 'tag'
+        run: ./ndm_file-timestamp.sh --check-script
+
+  macos:
+    # The tools that come with macOS: bash 3.2, BSD date and stat, shasum, LibreSSL.
+    # Every step limits PATH to the system directories, so Homebrew's GNU tools are not
+    # used, and runs the script with /bin/bash (not the bash found by env).
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: System tools
+        run: |
+          export PATH=/usr/bin:/bin:/usr/sbin:/sbin
+          /bin/bash --version | head -1
+          /bin/bash -c '[[ ${BASH_VERSINFO[0]} -eq 3 ]]' || { echo "::error::/bin/bash is not bash 3"; exit 1; }
+          openssl version
+          command -v date stat shasum curl
+          echo "also present: $(command -v sha256sum realpath | tr '\n' ' ')"
+      - name: Version, help and requirements
+        run: |
+          export PATH=/usr/bin:/bin:/usr/sbin:/sbin
+          /bin/bash ./ndm_file-timestamp.sh --version
+          /bin/bash ./ndm_file-timestamp.sh --help > /dev/null
+          /bin/bash ./ndm_file-timestamp.sh --requirements
+      - name: Exit codes
+        run: |
+          export PATH=/usr/bin:/bin:/usr/sbin:/sbin
+          rc=0; /bin/bash ./ndm_file-timestamp.sh --nope || rc=$?; test "$rc" -eq 2
+          rc=0; /bin/bash ./ndm_file-timestamp.sh --verify || rc=$?; test "$rc" -eq 2
+          rc=0; /bin/bash ./ndm_file-timestamp.sh -d || rc=$?; test "$rc" -eq 2
+          rc=0; /bin/bash ./ndm_file-timestamp.sh --verify --list || rc=$?; test "$rc" -eq 2
+          rc=0; /bin/bash ./ndm_file-timestamp.sh no-such-file.txt || rc=$?; test "$rc" -eq 1
+          /bin/bash ./ndm_file-timestamp.sh --list
+      - name: Stamp, verify, list, and detect a modified file
+        # The only step that contacts the TSAs (one request per file and TSA): the date,
+        # stat and LibreSSL code paths of macOS run only on real proofs. Two files, one
+        # with spaces in its name, in a proof folder given with -d (also with spaces).
+        run: |
+          export PATH=/usr/bin:/bin:/usr/sbin:/sbin
+          script="$GITHUB_WORKSPACE/ndm_file-timestamp.sh"
+          cd "$RUNNER_TEMP"
+          echo "CI run $GITHUB_RUN_ID" > sample.txt
+          echo "CI run $GITHUB_RUN_ID, second file" > "file with spaces.txt"
+          /bin/bash "$script" -d "proof dir" sample.txt "file with spaces.txt"
+          cat "proof dir"/sample.txt_*/file-info.txt
+          /bin/bash "$script" --verify -d "proof dir" sample.txt "file with spaces.txt"
+          /bin/bash "$script" --list -d "proof dir"
+          # The root certificates downloaded by the first stamp are all there, unaltered
+          /bin/bash "$script" --verify-certs
+          # Archive with the system tar, then verify it on its own, as on another computer.
+          # Attachments: a stamped file and a folder with a file that has no timestamps.
+          mkdir "receipts dir" && echo "receipt $GITHUB_RUN_ID" > "receipts dir/receipt.eml"
+          /bin/bash "$script" --archive -d "proof dir" "file with spaces.txt" \
+            --attach sample.txt --attach "receipts dir"
+          # The archives go to the archive folder next to the script, in the repository
+          mkdir extracted
+          tar -C extracted -xf "$GITHUB_WORKSPACE"/ndm_file-timestamp-archives/"file with spaces.txt"_bundle_*.tar
+          cd extracted/*/
+          shasum -a 256 -c SHA256SUMS
+          /bin/bash ./ndm_file-timestamp.sh --verify "file with spaces.txt"
+          /bin/bash ./ndm_file-timestamp.sh --verify attachments/sample.txt
+          test -f attachments/receipt.eml
+          cd "$RUNNER_TEMP"
+          echo changed >> sample.txt
+          rc=0; /bin/bash "$script" --verify -d "proof dir" sample.txt || rc=$?
+          test "$rc" -eq 1

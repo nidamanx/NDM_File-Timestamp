@@ -1,0 +1,33 @@
+# Personal configuration: only the .example template is versioned
+ndm_file-timestamp.conf
+
+# Generated proofs: they contain the names and hashes of your files, keep them private.
+# The folder next to the script is versioned (via .gitkeep), its contents are not;
+# proof folders created anywhere else in the tree are ignored too.
+**/ndm_file-timestamp-proofs/*
+!/ndm_file-timestamp-proofs/.gitkeep
+
+# Archives made by --archive (file, proofs and script): same rules as the proofs
+**/ndm_file-timestamp-archives/*
+!/ndm_file-timestamp-archives/.gitkeep
+
+# Root certificates downloaded by the script (FreeTSA): each user downloads and checks
+# their own, so that nobody has to trust a certificate coming from this repository
+**/ndm_file-timestamp-certs/*
+!/ndm_file-timestamp-certs/.gitkeep
+
+# Suggested places for your own files to stamp and for their attachments (filled-in
+# templates, receipts): same rules
+**/ndm_file-timestamp-files/*
+!/ndm_file-timestamp-files/.gitkeep
+**/ndm_file-timestamp-attachments/*
+!/ndm_file-timestamp-attachments/.gitkeep
+
+# Editors, caches and OS files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db

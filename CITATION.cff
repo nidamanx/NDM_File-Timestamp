@@ -1,0 +1,33 @@
+cff-version: 1.2.0
+message: "If you use this software, or parts of its code, please cite it as below."
+type: software
+title: "NDM File Timestamp"
+abstract: >-
+  A single Bash script that proves a file existed, unchanged, at a given time: several
+  independent Time Stamping Authorities sign its SHA-256 hash with RFC 3161 timestamps,
+  and the proofs can be verified at any time, even after the TSA certificates expire.
+  The file, its proofs, the trusted root certificates and the script can be packed into
+  one self-contained archive that verifies offline.
+authors:
+  - given-names: "Nicola Davide"
+    family-names: "Mannarelli"
+    alias: "nidamanx"
+repository-code: "https://github.com/nidamanx/NDM_File-Timestamp"
+url: "https://github.com/nidamanx/NDM_File-Timestamp"
+license: AGPL-3.0-or-later
+version: "1.4.0"
+date-released: "2026-10-26"
+keywords:
+  - bash
+  - cli
+  - openssl
+  - rfc3161
+  - timestamp
+  - trusted-timestamping
+  - tsa
+  - time-stamping-authority
+  - proof-of-existence
+  - sha256
+  - integrity
+  - copyright
+  - digital-evidence

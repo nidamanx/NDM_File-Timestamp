@@ -1,0 +1,105 @@
+================================================================================
+INSTRUCTIONS - delete this whole box before signing
+================================================================================
+Template of a declaration of authorship of a work, to be used together with the
+proofs made by NDM File Timestamp (https://github.com/nidamanx/NDM_File-Timestamp).
+
+1. Stamp the work first:        ./ndm_file-timestamp.sh work.zip
+   then verify it:              ./ndm_file-timestamp.sh --verify work.zip
+   From the --verify output, copy the SHA-256 and the "at least since" date.
+2. Copy this template to a folder of the work, for example
+   ndm_file-timestamp-attachments/work/, and work on the copy.
+   Replace every [PLACEHOLDER] with your details; delete the lines and the
+   alternatives you do not need (those starting with "or").
+3. Sign the declaration:
+   - by hand: print it, sign it, scan it to PDF;
+   - better: with a digital signature (in the EU: a qualified electronic
+     signature).
+4. Stamp the signed declaration too:
+                                ./ndm_file-timestamp.sh declaration.pdf
+   For stronger protection, also register or deposit it, together with the
+   work, with the body of your country (copyright office, notary; in Italy a
+   PEC or SIAE).
+5. Keep everything together in one archive (work, declaration, receipts and
+   their proofs). Keep only the final documents in the folder of the work:
+     ./ndm_file-timestamp.sh --archive work.zip \
+         --attach ndm_file-timestamp-attachments/work/
+6. Keep the archive in at least two places. Do not open and save the stamped
+   files again: a single different byte invalidates the proofs. After every
+   copy, check the copy with --verify.
+
+The declaration alone does not prove authorship: it is a signed statement,
+which gains weight together with drafts, working files and dated proofs.
+This template is generic and is not legal advice.
+================================================================================
+
+
+                       DECLARATION OF AUTHORSHIP OF A WORK
+
+
+I, the undersigned [FULL NAME],
+born in [PLACE OF BIRTH] on [YYYY-MM-DD],
+residing at [ADDRESS, POSTCODE, CITY, COUNTRY],
+identity document [TYPE AND NUMBER OF THE DOCUMENT],
+e-mail [E-MAIL],
+
+DECLARE
+
+1. that I am the author of the work described below, which I conceived and
+   created personally;
+   or: that I am a co-author of the work together with
+   [NAMES OF THE OTHER AUTHORS], with the following contribution: [DESCRIPTION];
+
+2. that the work is original and does not copy, in whole or in part, works of
+   others, except for the parts listed here: [THIRD-PARTY PARTS AND THEIR
+   LICENSES, or "none"];
+
+3. that, at the date of this declaration, the economic rights in the work
+   - have not been transferred to anyone;
+   or: have been transferred / licensed to [NAME] under
+   [CONTRACT / LICENSE, DATE];
+
+4. that I keep the working files, drafts and earlier versions of the work, and
+   can produce them on request.
+
+
+DESCRIPTION OF THE WORK
+
+Title:                  [TITLE OF THE WORK]
+Type:                   [text / book / software / image / video / music /
+                         project / procedure / other: ...]
+Description:            [SHORT DESCRIPTION OF THE CONTENT]
+Created:                from [YYYY-MM-DD] to [YYYY-MM-DD]
+First publication:      [DATE AND PLACE / URL, or "unpublished"]
+
+
+FILES OF THE WORK AND TIMESTAMPS
+
+The timestamps were obtained with NDM File Timestamp from independent Time
+Stamping Authorities (RFC 3161) and can be verified with the script or, by
+hand, with openssl.
+
+File:                   [FILE NAME]
+SHA-256:                [64 HEXADECIMAL CHARACTERS]
+Existed at least since: [DATE AND TIME, TIME ZONE]   (authority: [freetsa / digicert / sectigo])
+Proof folder:           [FILE NAME]_[YYYYMMDD-HHMMSS]
+
+(repeat the block for every file of the work)
+
+File:                   [FILE NAME]
+SHA-256:                [64 HEXADECIMAL CHARACTERS]
+Existed at least since: [DATE AND TIME, TIME ZONE]   (authority: [...])
+Proof folder:           [FILE NAME]_[YYYYMMDD-HHMMSS]
+
+
+Notes:                  [OTHER EVIDENCE: registration or deposit with a
+                         copyright office or notary, publications, witnesses,
+                         or "none"]
+
+
+Place and date:  ______________________________ , ________ - ____ - ____
+
+
+Signature:       ______________________________
+
+                 [FULL NAME]
