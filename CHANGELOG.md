@@ -70,9 +70,11 @@ and for portability (Linux, Windows in WSL, macOS).
 - `--requirements`: the needed tools and the install command for the common Linux
   distributions and macOS. The system CA certificates are found on Debian/Ubuntu, Arch,
   Alpine, Fedora/RHEL, openSUSE and macOS.
-- Runs on Linux, on Windows in WSL and on macOS, where nothing needs to be installed. With
-  the `openssl` of macOS (LibreSSL), `--verify` warns that timestamps whose TSA
-  certificate has expired cannot be verified.
+- Runs on Linux, on Windows in WSL and on macOS, where nothing needs to be installed;
+  OpenSSL 3 is recommended. With LibreSSL (the `openssl` of macOS) or OpenSSL 1.1,
+  Sectigo timestamps are kept but cannot be verified, and the script says why; with
+  LibreSSL, `--verify` also warns that timestamps whose TSA certificate has expired
+  cannot be verified.
 - Optional configuration file `ndm_file-timestamp.conf` (template:
   `ndm_file-timestamp.conf.example`), only read, never executed: `OUTPUT_DIR`,
   `ARCHIVE_DIR`, `TSAS` (which TSAs to ask), `MIN_TIMESTAMPS` (how many different TSAs

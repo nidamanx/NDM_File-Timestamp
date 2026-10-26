@@ -179,6 +179,20 @@ jobs:
           /bin/bash ./ndm_file-timestamp.sh --verify attachments/sample.txt
           test -f attachments/receipt.eml
           cd "$RUNNER_TEMP"
+          # LibreSSL cannot check Sectigo's certificate list: the reason must be given
+          /bin/bash "$script" --verify -d "proof dir" sample.txt > libressl.txt
+          cat "proof dir"/sample.txt_*/sectigo-verify.txt
+          grep -q 'cannot check the certificate list of sectigo' libressl.txt
           echo changed >> sample.txt
           rc=0; /bin/bash "$script" --verify -d "proof dir" sample.txt || rc=$?
           test "$rc" -eq 1
+      - name: With OpenSSL 3 from Homebrew every timestamp verifies
+        # The remedy given in the README: Homebrew's OpenSSL 3 first in PATH
+        run: |
+          export PATH="$(brew --prefix openssl@3)/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+          openssl version | grep '^OpenSSL 3'
+          cd "$RUNNER_TEMP"
+          /bin/bash "$GITHUB_WORKSPACE/ndm_file-timestamp.sh" --verify -d "proof dir" \
+            "file with spaces.txt" > openssl3.txt
+          cat openssl3.txt
+          test "$(grep -c ' VALID ' openssl3.txt)" -eq 3

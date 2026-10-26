@@ -538,6 +538,22 @@ ts_attime_supported() {
 }
 TS_ATTIME=1
 
+# Is a failed verification due to this openssl rather than to the timestamp? When the
+# token's ESS list names more than one certificate, OpenSSL before 3 and LibreSSL require
+# every certificate of the chain in it, the trusted root too; Sectigo lists its own
+# certificates but not the root, so its timestamps never verify there. OpenSSL 3 only
+# requires every listed certificate to be in the chain.
+ess_limit() {
+  local re='^OpenSSL ([3-9]|[1-9][0-9])\.'
+  [[ ! $(openssl version 2>/dev/null) =~ $re ]] &&
+    grep -qi 'ess signing certificate error' "$1" 2>/dev/null
+}
+
+# Name and version of the openssl in use, e.g. "LibreSSL 3.3.6"
+openssl_name() {
+  openssl version 2>/dev/null | awk '{print $1, $2}' || true
+}
+
 # Readable "Time stamp" line of a .tsr
 tsr_time() {
   openssl ts -reply -in "$1" -text 2>/dev/null | grep 'Time stamp' | sed 's/^ *//' || true
@@ -727,8 +743,9 @@ warn_expiring_roots() {
     IFS='|' read -r r_tsa r_url r_sha r_fp <<< "$e"
     [[ " ${TSA_ACTIVE[*]} " == *" $r_tsa|"* ]] || continue
     f=$(root_file "$r_sha") || continue
-    if ! { openssl x509 -in "$f" -noout -checkend $((ROOT_EXPIRY_WARNING_DAYS * 86400)) 2>/dev/null \
-        || openssl x509 -inform DER -in "$f" -noout -checkend $((ROOT_EXPIRY_WARNING_DAYS * 86400)) 2>/dev/null; }; then
+    # -checkend also prints "Certificate will (not) expire" on stdout: only its status counts
+    if ! { openssl x509 -in "$f" -noout -checkend $((ROOT_EXPIRY_WARNING_DAYS * 86400)) &>/dev/null \
+        || openssl x509 -inform DER -in "$f" -noout -checkend $((ROOT_EXPIRY_WARNING_DAYS * 86400)) &>/dev/null; }; then
       end=$( { openssl x509 -in "$f" -noout -enddate 2>/dev/null \
         || openssl x509 -inform DER -in "$f" -noout -enddate 2>/dev/null; } | sed 's/^notAfter=//')
       warn "The root certificate of $r_tsa expires on $end."
@@ -968,6 +985,9 @@ stamp() {
         if unknown_root "$dir/${tsa}-verify.txt"; then
           warn "    its certificates lead to no root this script trusts: a fake answer, or a"
           warn "    new root of $tsa, known to a newer version of this script"
+        elif ess_limit "$dir/${tsa}-verify.txt"; then
+          warn "    this openssl ($(openssl_name)) cannot check the certificate list of $tsa:"
+          warn "    verify it with OpenSSL 3 (README, \"Requirements\")"
         fi
       fi
     fi
@@ -1107,6 +1127,10 @@ verify() {
         printf '    %-9s NOT VERIFIED  %s\n' "$tsa" "$when"
         printf '              its certificates lead to no root this script trusts: forged, or\n'
         printf '              signed under a newer root that a newer version of the script knows\n'
+      elif ess_limit "$RUN_TMP/verify.txt"; then
+        printf '    %-9s NOT VERIFIED  %s\n' "$tsa" "$when"
+        printf '              this openssl (%s) cannot check the certificate list of %s:\n' "$(openssl_name)" "$tsa"
+        printf '              verify it with OpenSSL 3 (README, "Requirements")\n'
       else
         printf '    %-9s NOT VERIFIED  %s\n' "$tsa" "$when"
       fi
@@ -1635,7 +1659,7 @@ else
   if ! ts_attime_supported; then
     TS_ATTIME=""
     warn "this openssl has no -attime (LibreSSL?): a timestamp whose TSA certificate has"
-    warn "expired will not verify. OpenSSL 1.1 or later does not have this limit."
+    warn "expired will not verify. OpenSSL 3 does not have this limit (README, \"Requirements\")."
   fi
 fi
 [[ $MODE == verify ]] || load_script_sha

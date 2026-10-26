@@ -169,7 +169,7 @@ archivio estratto controlla le radici dell'archivio.
 
 Sono tutti obbligatori. Su Linux lo script usa le GNU coreutils; su macOS usa gli
 strumenti del sistema (Bash 3.2, `date` e `stat` BSD, `shasum`), quindi lì non serve
-installare nulla. Lancia `./ndm_file-timestamp.sh --requirements` per vedere cosa manca e il comando esatto
+installare nulla (OpenSSL 3 è consigliato: vedi sotto). Lancia `./ndm_file-timestamp.sh --requirements` per vedere cosa manca e il comando esatto
 per installarlo sul tuo sistema:
 
 | Sistema | Comando |
@@ -183,12 +183,28 @@ per installarlo sul tuo sistema:
 | macOS | Niente: `openssl` (LibreSSL), `curl`, `shasum` e i certificati sono già nel sistema |
 | Windows | Usalo in WSL: vedi [Windows (WSL)](#windows-wsl) |
 
-**macOS e LibreSSL.** L'`openssl` di macOS è LibreSSL, che potrebbe non supportare
-`-attime` in `openssl ts -verify`. In quel caso `--verify` lo segnala e controlla i
-certificati alla data attuale: tutto funziona finché un certificato di una TSA non scade
-(quelli attuali scadono tra il 2037 e il 2040); dopo, quelle marche non si verificano più.
-OpenSSL 1.1 o successivo (per esempio `brew install openssl`, messo per primo nel `PATH`)
-non ha questo limite.
+**OpenSSL 3 è consigliato.** Con LibreSSL (l'`openssl` di macOS) o OpenSSL 1.1
+(distribuzioni Linux meno recenti) ci sono dei limiti:
+
+- **Le marche di Sectigo non si verificano.** Queste versioni controllano l'elenco dei
+  certificati nella marca in modo più rigido di OpenSSL 3, e l'elenco di Sectigo non
+  comprende la sua radice. Le marche vengono comunque ottenute e conservate, lo script
+  spiega perché non sono verificate, e si verificano con OpenSSL 3. FreeTSA e DigiCert si
+  verificano normalmente, quindi il file risulta comunque confermato (a meno che
+  `MIN_TIMESTAMPS` non richieda tutte e tre le TSA).
+- **Certificati scaduti (solo LibreSSL).** LibreSSL potrebbe non supportare `-attime` in
+  `openssl ts -verify`. In quel caso `--verify` lo segnala e controlla i certificati alla
+  data attuale: tutto funziona finché un certificato di una TSA non scade (quelli attuali
+  scadono tra il 2037 e il 2040); dopo, quelle marche non si verificano più.
+
+Su macOS, installa OpenSSL 3 con Homebrew e mettilo per primo nel `PATH` (aggiungi la
+riga `export` a `~/.zprofile` per mantenerlo):
+
+```bash
+brew install openssl@3
+export PATH="$(brew --prefix openssl@3)/bin:$PATH"
+openssl version          # OpenSSL 3.x
+```
 
 ## Installazione
 
@@ -546,7 +562,7 @@ Su macOS usa `shasum -a 256 -c` al posto di `sha256sum -c`, e
   della marca, non a oggi: una marca firmata quando i suoi certificati erano validi resta
   valida anche dopo la loro scadenza (i certificati delle TSA scadono fra il 2037 e il
   2041). L'unica eccezione è l'`openssl` di macOS (LibreSSL), che potrebbe non supportarlo:
-  lo script lo segnala, e OpenSSL 1.1 o successivo non ha questo limite.
+  lo script lo segnala, e OpenSSL 3 non ha questo limite (vedi "Requisiti").
 - **Nuove radici.** Prima che una radice scada, la sua TSA passa a una nuova. Da due anni
   prima della scadenza lo stamp mostra un avviso; quando la TSA è passata alla nuova
   radice, le marche nuove vengono comunque salvate ma segnalate come collegate a nessuna

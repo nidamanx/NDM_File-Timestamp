@@ -86,22 +86,19 @@ Download and check them now? [Y/n] y
     same as expected
     saved as ndm_file-timestamp-certs/sectigo-e793c9b02fd8aa13.crt
 
-Certificate will not expire
-Certificate will not expire
-Certificate will not expire
-==> Output folder: /home/user/NDM_File-Timestamp/ndm_file-timestamp-proofs/romanzo.pdf_20261026-112512
-==> SHA-256: 44a1e901d6e14f61abbb86f0dbd20d4620f25dfc70a3fd9289b38140635a5d7e
+==> Output folder: /home/user/NDM_File-Timestamp/ndm_file-timestamp-proofs/romanzo.pdf_20261026-145159
+==> SHA-256: 21e3fdc266912590d6f3f4af7cc37913d9b08833dfdd290bf36b030a507a1f07
 ==> 1/3 freetsa (https://freetsa.org/tsr)
-==>     OK - Time stamp: Oct 26 11:25:12 2026 GMT - verified
+==>     OK - Time stamp: Oct 26 14:52:00 2026 GMT - verified
 ==> 2/3 digicert (http://timestamp.digicert.com)
-==>     OK - Time stamp: Oct 26 11:25:13 2026 GMT - verified
+==>     OK - Time stamp: Oct 26 14:52:00 2026 GMT - verified
 ==> 3/3 sectigo (http://timestamp.sectigo.com)
-==>     OK - Time stamp: Oct 26 11:25:13 2026 GMT - verified
+==>     OK - Time stamp: Oct 26 14:52:00 2026 GMT - verified
 
 ==> Summary for romanzo.pdf
-    freetsa   Time stamp: Oct 26 11:25:12 2026 GMT - verified
-    digicert  Time stamp: Oct 26 11:25:13 2026 GMT - verified
-    sectigo   Time stamp: Oct 26 11:25:13 2026 GMT - verified
+    freetsa   Time stamp: Oct 26 14:52:00 2026 GMT - verified
+    digicert  Time stamp: Oct 26 14:52:00 2026 GMT - verified
+    sectigo   Time stamp: Oct 26 14:52:00 2026 GMT - verified
 ```
 
 Tre autorità indipendenti hanno firmato l'hash del file con la loro data. È stato inviato
@@ -123,15 +120,15 @@ prima con `--get-certs`, oppure a mano: vedi
 
 ```
 ==> File:    /home/user/NDM_File-Timestamp/ndm_file-timestamp-files/romanzo.pdf
-==> SHA-256: 44a1e901d6e14f61abbb86f0dbd20d4620f25dfc70a3fd9289b38140635a5d7e
+==> SHA-256: 21e3fdc266912590d6f3f4af7cc37913d9b08833dfdd290bf36b030a507a1f07
 
-==> Proofs: romanzo.pdf_20261026-112512
-    digicert  VALID     2026-10-26 11:25:13 UTC  (local time: 2026-10-26 12:25:13 CET)
-    freetsa   VALID     2026-10-26 11:25:12 UTC  (local time: 2026-10-26 12:25:12 CET)
-    sectigo   VALID     2026-10-26 11:25:13 UTC  (local time: 2026-10-26 12:25:13 CET)
+==> Proofs: romanzo.pdf_20261026-145159
+    digicert  VALID     2026-10-26 14:52:00 UTC  (local time: 2026-10-26 15:52:00 CET)
+    freetsa   VALID     2026-10-26 14:52:00 UTC  (local time: 2026-10-26 15:52:00 CET)
+    sectigo   VALID     2026-10-26 14:52:00 UTC  (local time: 2026-10-26 15:52:00 CET)
 
 ==> Result: romanzo.pdf existed, unchanged, at least since
-    26/10/2026 12:25:12 CET  (freetsa)
+    26/10/2026 15:52:00 CET  (digicert)
     confirmed by 3 valid timestamp(s)
 ```
 
@@ -160,22 +157,19 @@ Poi cancella `dichiarazione.txt`: nella cartella resta solo il documento firmato
 ```
 
 ```
-Certificate will not expire
-Certificate will not expire
-Certificate will not expire
-==> Output folder: /home/user/NDM_File-Timestamp/ndm_file-timestamp-proofs/dichiarazione.pdf_20261026-112514
-==> SHA-256: 56953ad8d1ad796e6dbc60a76f3a058a279b9267544acf9bd452a964227a764f
+==> Output folder: /home/user/NDM_File-Timestamp/ndm_file-timestamp-proofs/dichiarazione.pdf_20261026-145201
+==> SHA-256: 44e64ab07e0198745f71686572ebb009288e8facb8472bc81df99b6f24781641
 ==> 1/3 freetsa (https://freetsa.org/tsr)
-==>     OK - Time stamp: Oct 26 11:25:15 2026 GMT - verified
+==>     OK - Time stamp: Oct 26 14:52:02 2026 GMT - verified
 ==> 2/3 digicert (http://timestamp.digicert.com)
-==>     OK - Time stamp: Oct 26 11:25:15 2026 GMT - verified
+==>     OK - Time stamp: Oct 26 14:52:02 2026 GMT - verified
 ==> 3/3 sectigo (http://timestamp.sectigo.com)
-==>     OK - Time stamp: Oct 26 11:25:17 2026 GMT - verified
+==>     OK - Time stamp: Oct 26 14:52:05 2026 GMT - verified
 
 ==> Summary for dichiarazione.pdf
-    freetsa   Time stamp: Oct 26 11:25:15 2026 GMT - verified
-    digicert  Time stamp: Oct 26 11:25:15 2026 GMT - verified
-    sectigo   Time stamp: Oct 26 11:25:17 2026 GMT - verified
+    freetsa   Time stamp: Oct 26 14:52:02 2026 GMT - verified
+    digicert  Time stamp: Oct 26 14:52:02 2026 GMT - verified
+    sectigo   Time stamp: Oct 26 14:52:05 2026 GMT - verified
 ```
 
 La dichiarazione contiene lo SHA-256 del romanzo, quindi le due prove si sostengono a
@@ -188,8 +182,8 @@ vicenda. Ora `--list` le mostra entrambe:
 ```
 ==> Proofs in /home/user/NDM_File-Timestamp/ndm_file-timestamp-proofs
     Run (UTC)            Timestamps  SHA-256 (start)   File
-    2026-10-26 11:25:12  3           44a1e901d6e14f61  romanzo.pdf
-    2026-10-26 11:25:14  3           56953ad8d1ad796e  dichiarazione.pdf
+    2026-10-26 14:51:59  3           21e3fdc266912590  romanzo.pdf
+    2026-10-26 14:52:01  3           44e64ab07e019874  dichiarazione.pdf
 
     2 proof folder(s). The run dates come from the local clock; the dates
     that count are those signed by the TSAs: see them with --verify FILE.
@@ -220,10 +214,10 @@ verifica, uguale a quello del passo 4, qui è accorciato):
 ==> File:    /home/user/NDM_File-Timestamp/ndm_file-timestamp-attachments/romanzo/dichiarazione.pdf
 ...
 ==> Result: dichiarazione.pdf existed, unchanged, at least since
-    26/10/2026 12:25:15 CET  (digicert)
+    26/10/2026 15:52:02 CET  (digicert)
     confirmed by 3 valid timestamp(s)
 
-==> Archive: /home/user/NDM_File-Timestamp/ndm_file-timestamp-archives/romanzo.pdf_bundle_20261026-112517.tar
+==> Archive: /home/user/NDM_File-Timestamp/ndm_file-timestamp-archives/romanzo.pdf_bundle_20261026-145205.tar
     romanzo.pdf, 1 proof folder(s), ndm_file-timestamp.sh 1.4.0 and its LICENSE.
     attachments/: 1 file(s), 1 with valid timestamps.
     To check it later: extract it, then run in the extracted folder
@@ -243,8 +237,8 @@ poi controlla una copia, come farebbe chiunque altro:
 ```bash
 cp ndm_file-timestamp-archives/romanzo.pdf_bundle_*.tar /media/backup/
 cd /media/backup
-tar -xf romanzo.pdf_bundle_20261026-112517.tar
-cd romanzo.pdf_bundle_20261026-112517
+tar -xf romanzo.pdf_bundle_20261026-145205.tar
+cd romanzo.pdf_bundle_20261026-145205
 sha256sum -c SHA256SUMS
 ./ndm_file-timestamp.sh --verify romanzo.pdf
 ./ndm_file-timestamp.sh --verify attachments/dichiarazione.pdf
@@ -254,15 +248,15 @@ sha256sum -c SHA256SUMS
 romanzo.pdf: OK
 attachments/dichiarazione.pdf: OK
 ndm_file-timestamp.sh: OK
-==> File:    /media/backup/romanzo.pdf_bundle_20261026-112517/romanzo.pdf
+==> File:    /media/backup/romanzo.pdf_bundle_20261026-145205/romanzo.pdf
 ...
 ==> Result: romanzo.pdf existed, unchanged, at least since
-    26/10/2026 12:25:12 CET  (freetsa)
+    26/10/2026 15:52:00 CET  (digicert)
     confirmed by 3 valid timestamp(s)
-==> File:    /media/backup/romanzo.pdf_bundle_20261026-112517/attachments/dichiarazione.pdf
+==> File:    /media/backup/romanzo.pdf_bundle_20261026-145205/attachments/dichiarazione.pdf
 ...
 ==> Result: dichiarazione.pdf existed, unchanged, at least since
-    26/10/2026 12:25:15 CET  (digicert)
+    26/10/2026 15:52:02 CET  (digicert)
     confirmed by 3 valid timestamp(s)
 ```
 

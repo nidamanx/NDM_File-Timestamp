@@ -156,7 +156,7 @@ extracted archive it checks the roots of the archive.
 
 All of them are required. On Linux the script uses the GNU coreutils; on macOS it uses
 the system's own tools (Bash 3.2, BSD `date` and `stat`, `shasum`), so nothing needs to
-be installed there. Run `./ndm_file-timestamp.sh --requirements` to see what is missing and the exact
+be installed there (OpenSSL 3 is recommended: see below). Run `./ndm_file-timestamp.sh --requirements` to see what is missing and the exact
 install command for your system:
 
 | System | Command |
@@ -170,11 +170,27 @@ install command for your system:
 | macOS | Nothing: `openssl` (LibreSSL), `curl`, `shasum` and the certificates come with the system |
 | Windows | Run it in WSL: see [Windows (WSL)](#windows-wsl) |
 
-**macOS and LibreSSL.** The `openssl` of macOS is LibreSSL, which may not support
-`-attime` in `openssl ts -verify`. Then `--verify` says so and checks the certificates at
-the current date: everything works until a TSA certificate expires (today's ones expire
-between 2037 and 2040), after which those timestamps no longer verify. OpenSSL 1.1 or
-later (for example `brew install openssl`, first in your `PATH`) does not have this limit.
+**OpenSSL 3 is recommended.** With LibreSSL (the `openssl` of macOS) or OpenSSL 1.1
+(older Linux distributions) there are limits:
+
+- **Sectigo timestamps do not verify.** These versions check the list of certificates
+  in the timestamp more strictly than OpenSSL 3, and Sectigo's list does not include its
+  root. The timestamps are still obtained and kept, the script says why they are not
+  verified, and they verify with OpenSSL 3. FreeTSA and DigiCert verify as usual, so a
+  file is still confirmed (unless `MIN_TIMESTAMPS` asks for all three TSAs).
+- **Expired certificates (LibreSSL only).** LibreSSL may not support `-attime` in
+  `openssl ts -verify`. Then `--verify` says so and checks the certificates at the
+  current date: everything works until a TSA certificate expires (today's ones expire
+  between 2037 and 2040), after which those timestamps no longer verify.
+
+On macOS, install OpenSSL 3 with Homebrew and put it first in your `PATH` (add the
+`export` line to `~/.zprofile` to keep it):
+
+```bash
+brew install openssl@3
+export PATH="$(brew --prefix openssl@3)/bin:$PATH"
+openssl version          # OpenSSL 3.x
+```
 
 ## Installation
 
@@ -526,7 +542,7 @@ On macOS use `shasum -a 256 -c` instead of `sha256sum -c`, and
   date of the timestamp, not today: a timestamp signed while its certificates were valid
   stays valid after they expire (the TSA certificates expire between 2037 and 2041). The
   only exception is the `openssl` of macOS (LibreSSL), which may not support this: the
-  script warns about it, and OpenSSL 1.1 or later has no such limit.
+  script warns about it, and OpenSSL 3 has no such limit (see "Requirements").
 - **New roots.** Before a root expires, its TSA moves to a new one. From two years before
   the expiry, stamping shows a warning; when the TSA has moved, new timestamps are still
   saved but reported as leading to no trusted root, until a newer version of the script
