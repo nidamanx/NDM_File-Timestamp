@@ -6,10 +6,11 @@
 ![Version](https://img.shields.io/badge/version-1.5.0-informational)
 ![Shell](https://img.shields.io/badge/shell-bash-4EAA25)
 
-**NDM File Timestamp** proves that a file existed, exactly as it is now, at a given time.
-Three independent Time Stamping Authorities (TSA) sign the file's SHA-256 hash together
-with their own date and time (RFC 3161 timestamps), and the proofs can be verified at
-any time, by this script or by hand with `openssl`.
+**NDM File Timestamp** proves that a file existed, exactly as it is now, at a given time:
+a proof of existence and integrity based on trusted timestamping. Three independent Time
+Stamping Authorities (TSA) sign the file's SHA-256 hash together with their own date and
+time (RFC 3161 timestamps), and the proofs can be verified at any time, by this script or
+by hand with `openssl`.
 
 It is one Bash script with no extra libraries: it relies on `openssl`, `curl` and the
 standard system tools, and runs on Linux, on Windows in WSL and on macOS. Only the hash of

@@ -7,10 +7,11 @@
 ![Shell](https://img.shields.io/badge/shell-bash-4EAA25)
 
 **NDM File Timestamp** dimostra che un file esisteva, esattamente com'è ora, in un certo
-momento. Tre autorità di marcatura temporale indipendenti (TSA, Time Stamping Authority)
-firmano l'hash SHA-256 del file insieme alla propria data e ora (marche temporali RFC
-3161), e le prove si possono verificare in qualsiasi momento, con questo script o a mano
-con `openssl`.
+momento: una prova di esistenza e di integrità basata sulla marcatura temporale (trusted
+timestamping). Tre autorità di marcatura temporale indipendenti (TSA, Time Stamping
+Authority) firmano l'hash SHA-256 del file insieme alla propria data e ora (marche
+temporali RFC 3161), e le prove si possono verificare in qualsiasi momento, con questo
+script o a mano con `openssl`.
 
 È un solo script Bash senza librerie aggiuntive: usa `openssl`, `curl` e gli strumenti
 standard del sistema, e funziona su Linux, su Windows in WSL e su macOS. In rete viaggia
