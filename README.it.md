@@ -259,6 +259,27 @@ Note per Windows:
   anche se cloni con Git for Windows: quelle di Windows (CRLF) romperebbero lo script con
   errori come `/usr/bin/env: 'bash\r': No such file or directory`.
 
+### Aggiornamento
+
+`--check-script` segnala quando è uscita una versione più recente. In un clone del
+repository, sul ramo `main` e senza modifiche locali, propone anche di aggiornarlo subito
+(si può fare lo stesso a mano):
+
+```bash
+cd NDM_File-Timestamp
+git pull --ff-only
+```
+
+Se hai scaricato solo lo script, scarica quello nuovo dall'[ultima
+release](https://github.com/nidamanx/NDM_File-Timestamp/releases/latest), sostituisci il
+vecchio file, esegui `chmod +x ndm_file-timestamp.sh` e controllalo come in [Controllo
+dello script](#controllo-dello-script). Se `git status` mostra modifiche locali, tienine
+una copia ed eliminale (`git checkout -- ndm_file-timestamp.sh`) prima di aggiornare.
+
+L'aggiornamento non tocca mai le tue prove, gli archivi, i certificati radice né le
+impostazioni: non fanno parte del repository. Le versioni nuove continuano a verificare
+le prove create da quelle precedenti.
+
 ## Utilizzo
 
 ```
@@ -613,6 +634,15 @@ non può garantire per se stesso: chi lo modifica di proposito può modificare a
 controllo. Serve contro copie danneggiate e modifiche maldestre; contro una manomissione
 voluta conta solo il controllo indipendente.
 
+Dopo il confronto, `--check-script` (e `SCRIPT_CHECK=on`) dice anche se è uscita una
+versione più recente, con il link e come aggiornare (vedi [Aggiornamento](#aggiornamento)).
+In un clone git senza modifiche, il solo `--check-script` propone anche di aggiornarlo:
+chiede sempre prima, senza un terminale non aggiorna mai, e con `SCRIPT_CHECK=on` mostra
+solo l'avviso, così una marcatura non viene mai interrotta. È solo un'informazione: non
+cambia mai il codice di uscita né ferma l'esecuzione, e quando GitHub non risponde dice
+che non può saperlo. Come per il confronto, uno script modificato può nascondere anche
+questo avviso.
+
 Ogni cartella di prove registra in `file-info.txt` lo SHA-256 dello script che l'ha
 creata, e ogni archivio creato con `--archive` contiene lo script con il suo SHA-256 in
 `SHA256SUMS`.
@@ -722,6 +752,7 @@ controversia rivolgiti a un legale.
 | Sectigo (`timestamp.sectigo.com`, HTTP) | Marca temporale | L'hash SHA-256 |
 | DigiCert (`cacerts.digicert.com`) e Sectigo (`crt.usertrust.com`), HTTP | Una sola volta, download dei certificati radice | Nulla |
 | GitHub (`raw.githubusercontent.com`, HTTPS) | Solo `--check-script` e `SCRIPT_CHECK=on`: download dello script pubblicato | Nulla sui tuoi file |
+| GitHub (`github.com`, HTTPS) | Solo `--check-script` e `SCRIPT_CHECK=on`: numero dell'ultima versione (`/releases/latest`) | Nulla sui tuoi file |
 
 Non viene inviato nient'altro: né il file né il suo nome. Come per qualsiasi richiesta
 web, i servizi vedono l'indirizzo IP del tuo computer. `--verify`, `--list`, `--archive`,

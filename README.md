@@ -245,6 +245,26 @@ Notes for Windows:
   if you clone with Git for Windows: Windows line endings (CRLF) would break the script
   with errors like `/usr/bin/env: 'bash\r': No such file or directory`.
 
+### Updating
+
+`--check-script` says when a newer version has been released. In a clone of the
+repository, on branch `main` and without local changes, it also offers to update it on
+the spot (the same can be done by hand):
+
+```bash
+cd NDM_File-Timestamp
+git pull --ff-only
+```
+
+If you downloaded only the script, download the new one from the
+[latest release](https://github.com/nidamanx/NDM_File-Timestamp/releases/latest),
+replace the old file, run `chmod +x ndm_file-timestamp.sh` and check it as in
+[Checking the script](#checking-the-script). If `git status` shows local changes, keep a
+copy of them and discard them (`git checkout -- ndm_file-timestamp.sh`) before pulling.
+
+Updating never touches your proofs, archives, root certificates or settings: they are
+not part of the repository. Newer versions keep verifying the proofs made by older ones.
+
 ## Usage
 
 ```
@@ -590,6 +610,14 @@ cannot vouch for itself: whoever modifies it on purpose can also modify this che
 catches damaged copies and careless edits; against deliberate tampering only the
 independent check counts.
 
+After the comparison, `--check-script` (and `SCRIPT_CHECK=on`) also says whether a newer
+version has been released, with the link to it and how to update (see
+[Updating](#updating)). In a clean git clone, `--check-script` alone also offers to update
+it: it asks first, never updates without a terminal, and with `SCRIPT_CHECK=on` it only
+shows the notice, so a stamp is never interrupted. This is information only: it never
+changes the exit code nor stops a run, and when GitHub cannot be reached it says that it
+cannot tell. Like the comparison, a modified script can hide this notice too.
+
 Every proof folder records in `file-info.txt` the SHA-256 of the script that made it, and
 every archive made with `--archive` contains the script with its SHA-256 in `SHA256SUMS`.
 
@@ -696,6 +724,7 @@ This is general information, not legal advice: in case of a dispute, consult a l
 | Sectigo (`timestamp.sectigo.com`, HTTP) | Timestamp | The SHA-256 hash |
 | DigiCert (`cacerts.digicert.com`) and Sectigo (`crt.usertrust.com`), HTTP | Once, download of their root certificates | Nothing |
 | GitHub (`raw.githubusercontent.com`, HTTPS) | Only `--check-script` and `SCRIPT_CHECK=on`: download of the published script | Nothing about your files |
+| GitHub (`github.com`, HTTPS) | Only `--check-script` and `SCRIPT_CHECK=on`: number of the latest version (`/releases/latest`) | Nothing about your files |
 
 Nothing else is sent: not the file, not its name. As with any web request, the services
 see the IP address of your computer. `--verify`, `--list`, `--archive`, `--requirements`,

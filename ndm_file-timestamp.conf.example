@@ -43,8 +43,9 @@
 
 # Before stamping, verifying or archiving, compare this script with the one published on
 # GitHub for its version (as --check-script does): on stops if they differ, and only warns
-# when the comparison is not possible (no network, version not published). It contacts
-# GitHub at every run. See "Checking the script" in the README for the independent check.
+# when the comparison is not possible (no network, version not published). It also says
+# whether a newer version has been released (never stops for that). It contacts GitHub
+# at every run. See "Checking the script" in the README for the independent check.
 # Default: off
 #SCRIPT_CHECK=on
 

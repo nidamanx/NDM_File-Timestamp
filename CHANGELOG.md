@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `--check-script` (and `SCRIPT_CHECK=on`) also says whether a newer version has been
+  released, with its link and how to update. In a clone of the repository without local
+  changes, `--check-script` offers to update it with `git pull` (it always asks first).
+  The exit code is unchanged.
+- README: how to update (section "Updating" under "Installation").
+
 ## [1.5.0] - 2026-10-26
 
 ### Added

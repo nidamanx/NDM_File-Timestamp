@@ -87,7 +87,9 @@ APP_URL="https://github.com/nidamanx/NDM_File-Timestamp"
 #
 #          --check-script        compare this script with the one published on GitHub
 #                                for its version (exit code 1 if different or if the
-#                                comparison is not possible)
+#                                comparison is not possible), and say whether a newer
+#                                version has been released and how to update (in a git
+#                                clone it offers to run git pull)
 #          --get-certs           show the root certificates of the TSAs and download the
 #                                missing ones, showing every check (see below)
 #          --verify-certs        check, offline, that every root certificate is there and
@@ -1471,7 +1473,17 @@ EOF
 # 2 = cannot tell (no network, or this version is not published). This catches damage and
 # careless edits; a deliberate attacker could change this check too, so the independent
 # check in the README (sha256sum of the published file) is the one that really counts.
+# Afterwards it says whether a newer release exists and how to update: information only,
+# the return code is the one of the comparison. "offer" (only --check-script, never before
+# a stamp) also offers to update a git clone right away.
 script_check() {
+  local rc=0
+  script_compare || rc=$?
+  release_check "${1:-}"
+  return "$rc"
+}
+
+script_compare() {
   local raw tmp mine theirs
   raw="https://raw.githubusercontent.com/${APP_URL#https://github.com/}/v${APP_VERSION}/${PUBLISHED_NAME}"
   have curl || { warn "Script check: curl is missing, cannot compare with the published version"; return 2; }
@@ -1495,6 +1507,88 @@ script_check() {
   err "    published:    $theirs  $raw"
   err "    It may have been modified: download it again from $APP_URL"
   return 1
+}
+
+# Is version $1 newer than $2? Both X.Y.Z; compared field by field as numbers (sort -V
+# is missing on macOS)
+version_newer() {
+  local a b i
+  IFS=. read -r -a a <<< "$1"
+  IFS=. read -r -a b <<< "$2"
+  for i in 0 1 2; do
+    ((10#${a[i]} == 10#${b[i]})) || { ((10#${a[i]} > 10#${b[i]})); return; }
+  done
+  return 1
+}
+
+# The latest release comes from the redirect of .../releases/latest to .../releases/tag/vX.Y.Z:
+# no JSON to parse and no API rate limit. Anything else (no network, no release, another
+# page) means "cannot tell", never a wrong answer.
+release_check() {
+  local page="$APP_URL/releases/latest" url="" latest re
+  have curl || return 0
+  url="$(curl -sS -m 30 --max-filesize "$MAX_DOWNLOAD_BYTES" -o /dev/null \
+              -w '%{redirect_url}' "$page" 2>/dev/null)" || url=""
+  re="^$APP_URL/releases/tag/v((0|[1-9][0-9]{0,8})\.(0|[1-9][0-9]{0,8})\.(0|[1-9][0-9]{0,8}))$"
+  if [[ ! $url =~ $re ]]; then
+    warn "Script check: cannot tell whether a newer version exists (no network, or no answer from GitHub)"
+    return 0
+  fi
+  latest=${BASH_REMATCH[1]}
+  if version_newer "$latest" "$APP_VERSION"; then
+    warn "Script check: a newer version v$latest is available: $url"
+    update_help "$1"
+  elif [[ $latest == "$APP_VERSION" ]]; then
+    say "Script check: v$APP_VERSION is the latest version"
+  else
+    say "Script check: v$APP_VERSION is newer than the latest published version (v$latest)"
+  fi
+}
+
+# Why the folder of this script cannot be updated with git pull, or nothing when it can:
+# a clone of this repository, on branch main, without local changes to versioned files
+# (proofs, certificates and settings are not versioned, so they never count)
+git_update_blocker() {
+  local top origin re
+  have git || { echo "git is not installed"; return; }
+  top="$(git -C "$SCRIPT_DIR" rev-parse --show-toplevel 2>/dev/null)" || top=""
+  [[ -n $top && $(cd "$top" && pwd -P) == "$SCRIPT_DIR" ]] \
+    || { echo "the script folder is not a git clone"; return; }
+  origin="$(git -C "$SCRIPT_DIR" config --get remote.origin.url 2>/dev/null)" || origin=""
+  re="^(https://github\.com/|git@github\.com:|ssh://git@github\.com/)${APP_URL#https://github.com/}(\.git)?/?$"
+  [[ $origin =~ $re ]] || { echo "the clone does not come from $APP_URL"; return; }
+  [[ $(git -C "$SCRIPT_DIR" symbolic-ref --short -q HEAD) == main ]] \
+    || { echo "the clone is not on branch main"; return; }
+  [[ -z $(git -C "$SCRIPT_DIR" status --porcelain --untracked-files=no) ]] \
+    || echo "the clone has local changes (git status shows them)"
+}
+
+# How to update, after the notice of a newer version. In a clean git clone, with "offer"
+# and a terminal, it asks and runs git pull; then it stops, because bash reads a script
+# while running it, and the new file must not be run halfway. Never without asking.
+update_help() {
+  local why cmd ans="" new
+  why="$(git_update_blocker)"
+  if [[ -n $why ]]; then
+    warn "    To update, see \"Updating\" in the README: $APP_URL#updating"
+    have git && warn "    (no automatic update: $why)"
+    return 0
+  fi
+  cmd="git -C $(printf '%q' "$SCRIPT_DIR") pull --ff-only"
+  warn "    This is a git clone of the repository: update it with"
+  warn "      $cmd"
+  [[ $1 == offer && -t 0 && -t 2 ]] || return 0
+  printf 'Update now? [Y/n] ' >&2
+  read -r ans || ans=n
+  [[ -z $ans || $ans == [Yy]* ]] || return 0
+  if ! git -C "$SCRIPT_DIR" pull --ff-only >&2; then
+    err "Update failed: see the message above, or \"Updating\" in the README"
+    return 0
+  fi
+  new="$(sed -n 's/^APP_VERSION="\(.*\)"$/\1/p' "$SCRIPT_PATH")"
+  say "Updated: the script is now v${new:-?}. Run --check-script again to compare it with"
+  say "    the published version, then run your command again."
+  exit 0
 }
 
 # ---------------------------------------------------------------------------
@@ -1525,7 +1619,7 @@ case "${1:-}" in
       -h|--help) usage ;;
       -v|--version) version_info ;;
       --requirements) requirements_help ;;
-      --check-script) rc=0; script_check || rc=$?; ((rc == 0)) || exit 1 ;;
+      --check-script) rc=0; script_check offer || rc=$?; ((rc == 0)) || exit 1 ;;
       --get-certs) get_certs || exit 1 ;;
       --verify-certs) verify_certs || exit 1 ;;
     esac
