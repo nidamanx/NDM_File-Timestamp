@@ -3,7 +3,7 @@
 **English** · [Italiano](README.it.md)
 
 [![License: AGPL v3+](https://img.shields.io/badge/License-AGPL_v3%2B-blue.svg)](LICENSE)
-![Version](https://img.shields.io/badge/version-1.5.0-informational)
+![Version](https://img.shields.io/badge/version-1.6.0-informational)
 ![Shell](https://img.shields.io/badge/shell-bash-4EAA25)
 
 **NDM File Timestamp** proves that a file existed, exactly as it is now, at a given time:

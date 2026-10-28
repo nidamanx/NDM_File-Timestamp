@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.6.0] - 2026-10-28
+
 ### Added
 
 - `--check-script` (and `SCRIPT_CHECK=on`) also says whether a newer version has been
@@ -114,6 +116,7 @@ and for portability (Linux, Windows in WSL, macOS).
   (filled-in templates, receipts), kept apart from the program; Git ignores their
   contents.
 
-[Unreleased]: https://github.com/nidamanx/NDM_File-Timestamp/compare/v1.5.0...HEAD
+[Unreleased]: https://github.com/nidamanx/NDM_File-Timestamp/compare/v1.6.0...HEAD
+[1.6.0]: https://github.com/nidamanx/NDM_File-Timestamp/compare/v1.5.0...v1.6.0
 [1.5.0]: https://github.com/nidamanx/NDM_File-Timestamp/compare/v1.4.0...v1.5.0
 [1.4.0]: https://github.com/nidamanx/NDM_File-Timestamp/releases/tag/v1.4.0
